@@ -10,12 +10,6 @@ router.post(
   "/storedetails",
   fetchuser,
   [
-    body("userId", "userId must be atleast 20 character")
-      .isLength({ min: 10 })
-      .not()
-      .isEmpty()
-      .trim()
-      .escape(),
     body("userName", "userName must be atleast 3 character")
       .isLength({
         min: 3,
@@ -29,8 +23,8 @@ router.post(
   async (req, res) => {
     let success = false;
     try {
-      const { userId, userName, userDetails } = req.body;
-
+      const { userName, userDetails } = req.body;
+      let userId = req.user.id;
       // If there are errors , return bad request and the errors
       const errors = validationResult(req);
       //   console.log(req.body.userName);
@@ -41,16 +35,34 @@ router.post(
           msg: "Invalid Inputs",
         });
       }
-      let userDet = await UserDetails.findOneAndUpdate(
-        userId,
-        { $set: req.body },
-        { new: true, upsert: true }
-      );
+
+      // let userDet = await UserDetails.findOneAndUpdate(
+      //   userId,
+      //   { $set: req.body },
+      //   { new: true, upsert: true }
+      // );
+
+      let userDetCheck = await UserDetails.findOne({ userId });
+      console.log(userDetCheck);
+      if (userDetCheck) {
+        success = false;
+        return res.status(400).json({
+          success,
+          msg: "User Details with this user already exists",
+        });
+      }
+      let userDet = await UserDetails.create({
+        userId: userId,
+        userName: userName,
+        userDetails: userDetails,
+      });
+
       success = true;
-      res.json({ success, msg: "UserDetails Inserted Successfully" });
+      res.json({ success, msg: "UserDetails Inserted Successfully", userDet });
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
+      console.log(error);
     }
   }
 );
@@ -61,8 +73,7 @@ router.get("/getdetails", fetchuser, [], async (req, res) => {
   try {
     let userId = req.user.id;
     console.log(userId);
-    // let userDet = await UserDetails.findOne({userId}).exec();
-    let userDet = await UserDetails.findOneAndUpdate(userId, {});
+    let userDet = await UserDetails.findOne({ userId });
     console.log("user Details is " + userDet);
     success = true;
     res.json({ success, msg: "UserDetails Retrieved Successfully", userDet });
@@ -72,7 +83,66 @@ router.get("/getdetails", fetchuser, [], async (req, res) => {
   }
 });
 
-// Route 3 : Storing ExerciseBookMarks : POST  "/api/userDetails/addexercisebookmark" . login required
+// Route 3 : Updating user details : PUT  "/api/userDetails/editdetails" . login required
+router.put(
+  "/editdetails",
+  fetchuser,
+  [
+    body("userName", "userName must be atleast 3 character")
+      .isLength({
+        min: 3,
+      })
+      .not()
+      .isEmpty()
+      .trim()
+      .escape(),
+    body("userDetails", "must be a object").isObject(),
+  ],
+  async (req, res) => {
+    let success = false;
+    try {
+      const { userName, userDetails } = req.body;
+      let userId = req.user.id;
+      // If there are errors , return bad request and the errors
+      const errors = validationResult(req);
+      //   console.log(req.body.userName);
+      if (!errors.isEmpty()) {
+        success = false;
+        return res.status(400).json({
+          success,
+          msg: "Invalid Inputs",
+        });
+      }
+      let newDetails = {
+        userId: userId,
+        userName: userName,
+        userDetails: userDetails,
+      };
+
+      let updatedDetails = await UserDetails.findOneAndUpdate(
+        userId,
+        {
+          $set:newDetails
+        },
+        { new: true }
+      );
+      console.log("updated is " + updatedDetails);
+
+      success = true;
+      res.json({
+        success,
+        msg: "UserDetails Updated Successfully",
+        updatedDetails,
+      });
+    } catch (error) {
+      success = false;
+      res.status(500).send({ success, msg: "Internal server error" });
+      console.log(error);
+    }
+  }
+);
+
+// Route 4 : Storing ExerciseBookMarks : POST  "/api/userDetails/addexercisebookmark" . login required
 router.post(
   "/addexercisebookmark",
   fetchuser,
@@ -147,7 +217,7 @@ router.post(
   }
 );
 
-// Route 4 : Fetching all the B0okmark of a user using : GET  "/api/userDetails/getexercisebookmark" . login required
+// Route 5 : Fetching all the B0okmark of a user using : GET  "/api/userDetails/getexercisebookmark" . login required
 router.get("/getexercisebookmark", fetchuser, async (req, res) => {
   let success = false;
   try {
@@ -161,7 +231,44 @@ router.get("/getexercisebookmark", fetchuser, async (req, res) => {
   }
 });
 
-// Route 5 : Storing RecipeBookMarks : POST  "/api/userDetails/addrecipebookmark" . login required
+// Route 6 : delete a bookmark using :DEL "/api/forum/deleteexercisebookmark/:id" . login required
+router.delete(
+  "/deleteexercisebookmark/:id",
+  fetchuser,
+  async (req, res) => {
+    let success = false;
+    try {
+      let userId = req.user.id;
+      let bookmarkId = req.params.id;
+
+      //Find the note to be updated and update it
+      const bookmark = await ExerciseBookMarks.findById(bookmarkId);
+      console.log(bookmark);
+      if (!bookmark) {
+        success = false;
+        return res.status(404).send({ success, msg: "No thread Found" });
+      }
+
+      //Allow deletion only if user owns this thread
+      if (bookmark.userId.toString() !== userId) {
+        success = false;
+        return res.status(401).send({ success, msg: "Not Allowed" });
+      }
+      
+      const deletedBookmark = await ExerciseBookMarks.findByIdAndDelete(bookmarkId);
+
+      success = true;
+      res.json({ success, msg: "Bookmark Deleted Successfully"});
+    } catch (error) {
+      success = false;
+      res.status(500).send({ success, msg: "Internal server error" });
+      console.log(error);
+    }
+  }
+);
+
+
+// Route 6 : Storing RecipeBookMarks : POST  "/api/userDetails/addrecipebookmark" . login required
 router.post(
   "/addrecipebookmark",
   fetchuser,
@@ -232,7 +339,6 @@ router.post(
           savedBookmark,
         });
       }
-
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
@@ -240,7 +346,7 @@ router.post(
   }
 );
 
-// Route 6 : Fetching all the Bookmark of a user using : GET  "/api/userDetails/getrecipebookmark" . login required
+// Route 7 : Fetching all the Bookmark of a user using : GET  "/api/userDetails/getrecipebookmark" . login required
 router.get("/getrecipebookmark", fetchuser, async (req, res) => {
   let success = false;
   try {
@@ -253,4 +359,42 @@ router.get("/getrecipebookmark", fetchuser, async (req, res) => {
     res.status(500).send({ success, msg: "Internal server error" });
   }
 });
+
+// Route 8 : delete a bookmark using :DEL "/api/forum/deleterecipebookmark/:id" . login required
+router.delete(
+  "/deleterecipebookmark/:id",
+  fetchuser,
+  async (req, res) => {
+    let success = false;
+    try {
+      let userId = req.user.id;
+      let bookmarkId = req.params.id;
+
+      //Find the note to be updated and update it
+      const bookmark = await RecipeBookMarks.findById(bookmarkId);
+      console.log(bookmark);
+      if (!bookmark) {
+        success = false;
+        return res.status(404).send({ success, msg: "No thread Found" });
+      }
+
+      //Allow deletion only if user owns this thread
+      if (bookmark.userId.toString() !== userId) {
+        success = false;
+        return res.status(401).send({ success, msg: "Not Allowed" });
+      }
+      
+      const deletedBookmark = await RecipeBookMarks.findByIdAndDelete(bookmarkId);
+
+      success = true;
+      res.json({ success, msg: "Bookmark Deleted Successfully"});
+    } catch (error) {
+      success = false;
+      res.status(500).send({ success, msg: "Internal server error" });
+      console.log(error);
+    }
+  }
+);
+
+
 module.exports = router;

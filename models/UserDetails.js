@@ -5,12 +5,12 @@ const UserDetailsSchema = new Schema({
   userId:{
     type: mongoose.Schema.Types.ObjectId,
     ref:'user',
-    required:true
+    required:true,
+    unique:true
   },
   userName:{
     type: String,
-    ref:'user',
-    unique:true
+    ref:'user'
   },
   userDetails:{
     type:Object,

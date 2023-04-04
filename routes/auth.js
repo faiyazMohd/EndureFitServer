@@ -54,7 +54,7 @@ router.post("/googlesignin", async (req, res) => {
   }
 });
 
-// Forget Password : Create a User using: PUT: "/api/auth/forgetpass" . No login required
+// Forget Password :  using: PUT: "/api/auth/forgetpass" . No login required
 router.put(
   "/forgetpass",
   [
@@ -278,7 +278,7 @@ router.get("/getuser", [], fetchuser, async (req, res) => {
       const user = await GoogleUsers.findById(userId);
       res.send(user);
     } else {
-      user = body(user.name.toString()).unescape();
+      // user = body(user.name.toString()).unescape();
       res.send(user);
     }
   } catch (error) {
