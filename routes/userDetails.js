@@ -246,10 +246,10 @@ router.delete(
       console.log(bookmark);
       if (!bookmark) {
         success = false;
-        return res.status(404).send({ success, msg: "No thread Found" });
+        return res.status(404).send({ success, msg: "No bookmark Found" });
       }
 
-      //Allow deletion only if user owns this thread
+      //Allow deletion only if user owns this bookmark
       if (bookmark.userId.toString() !== userId) {
         success = false;
         return res.status(401).send({ success, msg: "Not Allowed" });
@@ -375,10 +375,10 @@ router.delete(
       console.log(bookmark);
       if (!bookmark) {
         success = false;
-        return res.status(404).send({ success, msg: "No thread Found" });
+        return res.status(404).send({ success, msg: "No bookmark Found" });
       }
 
-      //Allow deletion only if user owns this thread
+      //Allow deletion only if user owns this bookmark
       if (bookmark.userId.toString() !== userId) {
         success = false;
         return res.status(401).send({ success, msg: "Not Allowed" });

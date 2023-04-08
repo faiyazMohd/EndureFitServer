@@ -59,22 +59,14 @@ router.put(
   "/forgetpass",
   [
     body("email", "Enter a valid email").isEmail().normalizeEmail(),
-    body("ans", "Answer should have atleast 3 character")
+    body("ans", "Answer should have atleast 1 character")
       .isLength({
-        min: 4,
-      })
-      .not()
-      .isEmpty()
-      .trim()
-      .escape(),
+        min: 1,
+      }),
     body("newPassword", "password must be atleast 4 character")
       .isLength({
         min: 4,
       })
-      .not()
-      .isEmpty()
-      .trim()
-      .escape(),
   ],
   async (req, res) => {
     let success = false;
@@ -140,9 +132,9 @@ router.post(
       .trim()
       .escape(),
     body("email", "Enter a valid email").isEmail().normalizeEmail(),
-    body("ans", "Answer should have atleast 3 character")
+    body("ans", "Answer should have atleast 1 character")
       .isLength({
-        min: 4,
+        min: 1,
       })
       .not()
       .isEmpty()
@@ -201,7 +193,6 @@ router.post(
         },
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      console.log("Inside create user in line 110");
       success = true;
       res.json({ success, msg: "User Created Successfully", authToken });
     } catch (error) {
@@ -259,7 +250,7 @@ router.post(
       };
       const authToken = jwt.sign(data, JWT_SECRET);
       success = true;
-      res.json({ success, msg: "User Logged In Successfully", authToken });
+      res.json({ success, msg: "User LoggedIn Successfully", authToken });
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
@@ -273,13 +264,15 @@ router.get("/getuser", [], fetchuser, async (req, res) => {
   try {
     // console.log(req.user);
     let userId = req.user.id;
-    let user = await User.findById(userId).select("-password");
+    let user = await User.findById(userId).select("-password -ans -ques");
     if (!user) {
       const user = await GoogleUsers.findById(userId);
-      res.send(user);
+      success = true;
+      res.send({success,user});
     } else {
       // user = body(user.name.toString()).unescape();
-      res.send(user);
+      success = true;
+      res.send({success,user});
     }
   } catch (error) {
     success = false;
