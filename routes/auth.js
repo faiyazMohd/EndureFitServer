@@ -36,7 +36,8 @@ router.post("/googlesignin", async (req, res) => {
         //create a new user in GoogleUsers collection
         googleuser = await GoogleUsers.create({
           name: req.body.name,
-          email: req.body.email,
+          picture:req.body.picture,
+          email: req.body.email
         });
         const data = {
           user: {

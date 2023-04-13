@@ -25,6 +25,8 @@ router.post(
     try {
       const { userName, userDetails } = req.body;
       let userId = req.user.id;
+      console.log("userName is "+ userName);
+      console.log("userDetails is "+ userDetails);
       // If there are errors , return bad request and the errors
       const errors = validationResult(req);
       //   console.log(req.body.userName);
@@ -33,6 +35,7 @@ router.post(
         return res.status(400).json({
           success,
           msg: "Invalid Inputs",
+          errors: errors.array()
         });
       }
 
@@ -72,9 +75,9 @@ router.get("/getdetails", fetchuser, [], async (req, res) => {
   let success = false;
   try {
     let userId = req.user.id;
-    console.log(userId);
+    // console.log(userId);
     let userDet = await UserDetails.findOne({ userId });
-    console.log("user Details is " + userDet);
+    // console.log("user Details is " + userDet);
     success = true;
     res.json({ success, msg: "UserDetails Retrieved Successfully", userDet });
   } catch (error) {
