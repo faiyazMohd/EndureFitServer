@@ -16,7 +16,7 @@ router.post(
   async (req, res) => {
     let success = false;
     try {
-      const { threadId, commentContent } = req.body;
+      const { threadId, commentContent ,userPicture,userName} = req.body;
 
       // If there are errors , return bad request and the errors
       const errors = validationResult(req);
@@ -34,6 +34,8 @@ router.post(
         userId: userId,
         threadId: threadId,
         commentContent: commentContent,
+        userName:userName,
+        userPicture:userPicture,
       });
       success = true;
       const savedComment = await thread.save();

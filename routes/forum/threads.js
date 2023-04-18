@@ -18,14 +18,14 @@ router.post(
   async (req, res) => {
     let success = false;
     try {
-      const { categoryId, threadTitle, threadDesc } = req.body;
+      const { categoryId, threadTitle, threadDesc,userPicture,userName } = req.body;
       // If there are errors , return bad request and the errors
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         success = false;
         return res.status(400).json({
           success,
-          msg: "title must be atleast 3 character and description must be atleast 5 character",
+          msg: "title must be atleast 8 character and description must be atleast 15 character",
         });
       }
       let userId = req.user.id;
@@ -34,6 +34,8 @@ router.post(
       const thread = new Threads({
         userId: userId,
         categoryId: categoryId,
+        userName:userName,
+        userPicture:userPicture,
         threadTitle: threadTitle,
         threadDesc: threadDesc,
       });
@@ -67,8 +69,27 @@ router.get("/getthreads/:id", async (req, res) => {
     console.log(error);
   }
 });
+// Route 3 : get a thread with respective thread id  using : GET "/api/forum/getthread/:id" . No login required
+router.get("/getthread/:id", async (req, res) => {
+  let success = false;
+  try {
+    let threadId = req.params.id;
+    // console.log(categoryId);
+    const thread = await Threads.find({ _id: threadId });
+    success = true;
+    res.json({
+      success,
+      msg: "Fetched thread with corresponding thread ID",
+      thread,
+    });
+  } catch (error) {
+    success = false;
+    res.status(500).send({ success, msg: "Internal server error" });
+    console.log(error);
+  }
+});
 
-// Route 3 : update a thread using : PUT "/api/forum/editthread/:id" . login required
+// Route 4 : update a thread using : PUT "/api/forum/editthread/:id" . login required
 router.put(
   "/editthread/:id",
   fetchuser,
@@ -137,7 +158,7 @@ router.put(
   }
 );
 
-// Route 4 : delete a thread using :DEL "/api/forum/deletethread/:id" . login required
+// Route 5 : delete a thread using :DEL "/api/forum/deletethread/:id" . login required
 router.delete(
   "/deletethread/:id",
   fetchuser,

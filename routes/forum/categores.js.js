@@ -27,7 +27,8 @@ router.get(
     let success = false;
     try {
       let category = await Categories.find({});
-      res.send(category);
+      success =  true
+      res.send({success,msg:"categories retrieved successfully",category});
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error", error });

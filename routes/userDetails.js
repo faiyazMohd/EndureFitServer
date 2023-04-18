@@ -195,7 +195,7 @@ router.post(
           success = false;
           return res.status(400).json({
             success,
-            msg: "Bookmark already exists for this user",
+            msg: "Bookmark already exists ",
           });
         }
       } else {
@@ -208,7 +208,7 @@ router.post(
         success = true;
         res.json({
           success,
-          msg: "Bookmark Added Successfully for this user",
+          msg: "Bookmark Added Successfully",
           savedBookmark,
         });
       }
@@ -338,7 +338,7 @@ router.post(
         success = true;
         res.json({
           success,
-          msg: "Bookmark Added Successfully for this user",
+          msg: "Bookmark Added Successfully",
           savedBookmark,
         });
       }

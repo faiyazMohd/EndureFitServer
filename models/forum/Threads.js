@@ -20,6 +20,13 @@ const Threads = new Schema({
     ref:'user',
     required:true
   },
+  userName:{
+    type: String,
+    required: true
+  },
+  userPicture:{
+    type: String
+  },
   date: {
     type: Date,
     default: Date.now,
