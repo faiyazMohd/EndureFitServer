@@ -29,7 +29,7 @@ router.post(
       }
 
       let userId = req.user.id;
-      console.log("threadId is "+threadId);
+      // console.log("threadId is "+threadId);
       const thread = new Comments({
         userId: userId,
         threadId: threadId,
@@ -43,7 +43,7 @@ router.post(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -54,7 +54,7 @@ router.get("/getcomments/:id", async (req, res) => {
   let success = false;
   try {
     let threadId = req.params.id;
-    console.log(threadId);
+    // console.log(threadId);
     const comments = await Comments.find({ threadId: threadId });
     success = true;
     res.json({
@@ -65,7 +65,7 @@ router.get("/getcomments/:id", async (req, res) => {
   } catch (error) {
     success = false;
     res.status(500).send({ success, msg: "Internal server error" });
-    console.log(error);
+    // console.log(error);
   }
 });
 
@@ -131,7 +131,7 @@ router.put(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -167,7 +167,7 @@ router.delete(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -207,7 +207,7 @@ router.put(
       } catch (error) {
         success = false;
         res.status(500).send({ success, msg: "Internal server error" });
-        console.log(error);
+        // console.log(error);
       }
     }
   );

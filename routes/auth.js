@@ -165,13 +165,11 @@ router.post(
       let user = await User.findOne({ email: req.body.email });
       if (user) {
         success = false;
-        console.log("Inside create user in line 88");
         return res.status(400).json({
           success,
           msg: "Sorry a user with this email already exists",
         });
       }
-      console.log("Inside create user in line 94");
 
       const passSalt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, passSalt);
@@ -179,8 +177,7 @@ router.post(
       const ansSalt = await bcrypt.genSalt(10);
       const secAns = await bcrypt.hash(req.body.ans, ansSalt);
       //  create a new user
-      console.log("Inside create user in line 98");
-      console.log(req.body);
+      // console.log(req.body);
       user = await User.create({
         name: req.body.name,
         email: req.body.email,
@@ -278,7 +275,7 @@ router.get("/getuser", [], fetchuser, async (req, res) => {
   } catch (error) {
     success = false;
     res.status(500).send({ success, msg: "Internal server error",error });
-    console.log(error);
+    // console.log(error);
   }
 });
 
@@ -319,7 +316,7 @@ router.put(
           { $set: { name: req.body.name } },
           { new: true }
         );
-        console.log(updatedName);
+        // console.log(updatedName);
         success = true;
         res.json({ success, msg: "User Name Updated Successfully" });
       } else {

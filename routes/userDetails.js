@@ -65,7 +65,7 @@ router.post(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -129,7 +129,7 @@ router.put(
         },
         { new: true }
       );
-      console.log("updated is " + updatedDetails);
+      // console.log("updated is " + updatedDetails);
 
       success = true;
       res.json({
@@ -140,7 +140,7 @@ router.put(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -172,14 +172,11 @@ router.post(
         bookmarkDetail: bookmarkDetail,
       });
       if (bookmarkCheck) {
-        console.log("bookmarkCheck is " + bookmarkCheck);
         if (bookmarkCheck.userId.toString() !== userId) {
           const bookmark = new ExerciseBookMarks({
             userId: userId,
             bookmarkDetail: bookmarkDetail,
           });
-          console.log("line 124");
-          console.log("bookmark is " + bookmark);
           const savedBookmark = await bookmark.save();
           success = true;
           res.json({
@@ -188,10 +185,7 @@ router.post(
             savedBookmark,
           });
         } else {
-          console.log(
-            "bookmarkCheck.userId is " + bookmarkCheck.userId.toString()
-          );
-          console.log("userId is " + userId);
+          
           success = false;
           return res.status(400).json({
             success,
@@ -203,7 +197,6 @@ router.post(
           userId: userId,
           bookmarkDetail: bookmarkDetail,
         });
-        console.log("bookmark is " + bookmark);
         const savedBookmark = await bookmark.save();
         success = true;
         res.json({
@@ -215,7 +208,7 @@ router.post(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error", error });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -225,7 +218,7 @@ router.get("/getexercisebookmark", fetchuser, async (req, res) => {
   let success = false;
   try {
     const bookmarks = await ExerciseBookMarks.find({ userId: req.user.id });
-    console.log(bookmarks);
+    // console.log(bookmarks);
     success = true;
     res.json({ success, msg: "Fetched all bookmarks", bookmarks });
   } catch (error) {
@@ -246,7 +239,7 @@ router.delete(
 
       //Find the note to be updated and update it
       const bookmark = await ExerciseBookMarks.findById(bookmarkId);
-      console.log(bookmark);
+      // console.log(bookmark);
       if (!bookmark) {
         success = false;
         return res.status(404).send({ success, msg: "No bookmark Found" });
@@ -265,7 +258,7 @@ router.delete(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -302,14 +295,11 @@ router.post(
       // let userCheck = await RecipeBookMarks.findOne({ userId: userId });
 
       if (bookmarkCheck) {
-        console.log("bookmarkCheck is " + bookmarkCheck);
         if (bookmarkCheck.userId.toString() !== userId) {
           const bookmark = new RecipeBookMarks({
             userId: userId,
             bookmarkDetail: bookmarkDetail,
           });
-          console.log("line 124");
-          console.log("bookmark is " + bookmark);
           const savedBookmark = await bookmark.save();
           success = true;
           res.json({
@@ -318,10 +308,6 @@ router.post(
             savedBookmark,
           });
         } else {
-          console.log(
-            "bookmarkCheck.userId is " + bookmarkCheck.userId.toString()
-          );
-          console.log("userId is " + userId);
           success = false;
           return res.status(400).json({
             success,
@@ -333,7 +319,6 @@ router.post(
           userId: userId,
           bookmarkDetail: bookmarkDetail,
         });
-        console.log("bookmark is " + bookmark);
         const savedBookmark = await bookmark.save();
         success = true;
         res.json({
@@ -354,7 +339,6 @@ router.get("/getrecipebookmark", fetchuser, async (req, res) => {
   let success = false;
   try {
     const bookmarks = await RecipeBookMarks.find({ userId: req.user.id });
-    console.log(bookmarks);
     success = true;
     res.json({ success, msg: "Fetched all bookmarks", bookmarks });
   } catch (error) {
@@ -375,7 +359,6 @@ router.delete(
 
       //Find the note to be updated and update it
       const bookmark = await RecipeBookMarks.findById(bookmarkId);
-      console.log(bookmark);
       if (!bookmark) {
         success = false;
         return res.status(404).send({ success, msg: "No bookmark Found" });
@@ -394,7 +377,7 @@ router.delete(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );

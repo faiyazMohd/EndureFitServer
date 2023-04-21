@@ -16,7 +16,7 @@ router.post("/postcategory", async (req, res) => {
   } catch (error) {
     success = false;
     res.status(500).send({ success, msg: "Internal server error" });
-    console.log(error);
+    // console.log(error);
   }
 });
 
@@ -32,7 +32,7 @@ router.get(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error", error });
-      console.log(error);
+      // console.log(error);
     }
   }
 );

@@ -11,7 +11,7 @@ const Concerns = new Schema({
     type: String,
     required:true
   },
-  userInfo:{
+  userFeedbacks:{
     type:String,
     required:true
   },

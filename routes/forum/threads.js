@@ -18,7 +18,8 @@ router.post(
   async (req, res) => {
     let success = false;
     try {
-      const { categoryId, threadTitle, threadDesc,userPicture,userName } = req.body;
+      const { categoryId, threadTitle, threadDesc, userPicture, userName } =
+        req.body;
       // If there are errors , return bad request and the errors
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -30,12 +31,12 @@ router.post(
       }
       let userId = req.user.id;
       //   console.log(userId);
-      console.log(categoryId);
+      // console.log(categoryId);
       const thread = new Threads({
         userId: userId,
         categoryId: categoryId,
-        userName:userName,
-        userPicture:userPicture,
+        userName: userName,
+        userPicture: userPicture,
         threadTitle: threadTitle,
         threadDesc: threadDesc,
       });
@@ -45,7 +46,7 @@ router.post(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
@@ -55,7 +56,7 @@ router.get("/getthreads/:id", async (req, res) => {
   let success = false;
   try {
     let categoryId = req.params.id;
-    console.log(categoryId);
+    // console.log(categoryId);
     const threads = await Threads.find({ categoryId: categoryId });
     success = true;
     res.json({
@@ -66,7 +67,7 @@ router.get("/getthreads/:id", async (req, res) => {
   } catch (error) {
     success = false;
     res.status(500).send({ success, msg: "Internal server error" });
-    console.log(error);
+    // console.log(error);
   }
 });
 // Route 3 : get a thread with respective thread id  using : GET "/api/forum/getthread/:id" . No login required
@@ -85,7 +86,7 @@ router.get("/getthread/:id", async (req, res) => {
   } catch (error) {
     success = false;
     res.status(500).send({ success, msg: "Internal server error" });
-    console.log(error);
+    // console.log(error);
   }
 });
 
@@ -142,7 +143,7 @@ router.put(
         success = false;
         return res.status(401).send({ success, msg: "Not Allowed" });
       }
-      
+
       const updatedThread = await Threads.findByIdAndUpdate(
         threadId,
         { $set: newThread },
@@ -153,43 +154,39 @@ router.put(
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      // console.log(error);
     }
   }
 );
 
 // Route 5 : delete a thread using :DEL "/api/forum/deletethread/:id" . login required
-router.delete(
-  "/deletethread/:id",
-  fetchuser,
-  async (req, res) => {
-    let success = false;
-    try {
-      let userId = req.user.id;
-      let threadId = req.params.id;
-      //Find the note to be updated and update it
-      const thread = await Threads.findById(req.params.id);
-      if (!thread) {
-        success = false;
-        return res.status(404).send({ success, msg: "No thread Found" });
-      }
-
-      //Allow deletion only if user owns this thread
-      if (thread.userId.toString() !== userId) {
-        success = false;
-        return res.status(401).send({ success, msg: "Not Allowed" });
-      }
-      
-      const deletedThread = await Threads.findByIdAndDelete(threadId);
-
-      success = true;
-      res.json({ success, msg: "Thread Deleted Successfully"});
-    } catch (error) {
+router.delete("/deletethread/:id", fetchuser, async (req, res) => {
+  let success = false;
+  try {
+    let userId = req.user.id;
+    let threadId = req.params.id;
+    //Find the note to be updated and update it
+    const thread = await Threads.findById(req.params.id);
+    if (!thread) {
       success = false;
-      res.status(500).send({ success, msg: "Internal server error" });
-      console.log(error);
+      return res.status(404).send({ success, msg: "No thread Found" });
     }
+
+    //Allow deletion only if user owns this thread
+    if (thread.userId.toString() !== userId) {
+      success = false;
+      return res.status(401).send({ success, msg: "Not Allowed" });
+    }
+
+    const deletedThread = await Threads.findByIdAndDelete(threadId);
+
+    success = true;
+    res.json({ success, msg: "Thread Deleted Successfully" });
+  } catch (error) {
+    success = false;
+    res.status(500).send({ success, msg: "Internal server error" });
+    // console.log(error);
   }
-);
+});
 
 module.exports = router;

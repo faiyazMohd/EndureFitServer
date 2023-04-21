@@ -13,11 +13,8 @@ const fetchuser = (req, res, next) => {
   }
 
   try {
-    console.log("inside fetchuser line 16");
     const data = jwt.verify(token,JWT_SECRET)
-    // console.log("data is"+data.user);
     req.user = data.user;
-    // console.log(req.user);
     next();
   } catch (error) {
     success = false;

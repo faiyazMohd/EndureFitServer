@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", require("./routes/auth"));
 app.use('/api/userDetails',require('./routes/userDetails'))
 app.use('/api/',require('./routes/concerns'))
+app.use('/api/',require('./routes/chatBot'))
 app.use('/api/forum/',require('./routes/forum/categores.js'))
 app.use('/api/forum/',require('./routes/forum/threads'))
 app.use('/api/forum/',require('./routes/forum/comments'))
