@@ -1,7 +1,7 @@
 const express = require("express");
 const { Configuration, OpenAIApi } = require("openai");
 const router = express.Router();
-
+console.log(process.env.OPENAI_API_KEY)
 // Route 1 : chat bot requests using: POST "/api/chatbot" . no login required
 router.post(
   "/chatbot",
