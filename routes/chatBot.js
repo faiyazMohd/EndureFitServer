@@ -29,6 +29,7 @@ router.post(
         res.status(200).send({ success, msg: "successfull",data });
     } catch (error) {
       success = false;
+      console.log("something went wrong");
       res.status(500).send({ success, msg: "Something went wrong" });
       console.log(error);
     }
