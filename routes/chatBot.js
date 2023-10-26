@@ -23,14 +23,14 @@ router.post(
             frequency_penalty: 0.5,
             presence_penalty: 0,
         });
-        // console.log(response);
+        console.log(response);
         const data = response.data.choices[0].text;
         success = true
         res.status(200).send({ success, msg: "successfull",data });
     } catch (error) {
       success = false;
       res.status(500).send({ success, msg: "Something went wrong" });
-      // console.log(error);
+      console.log(error);
     }
   }
 );

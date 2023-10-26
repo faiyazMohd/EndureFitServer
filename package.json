@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "mongoose": "^6.10.0",
+    "node-fetch": "^2.7.0",
     "openai": "^3.2.1"
   },
   "devDependencies": {

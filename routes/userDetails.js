@@ -13,6 +13,7 @@ router.post(
     body("userName", "userName must be atleast 3 character")
       .isLength({
         min: 3,
+        
       })
       .not()
       .isEmpty()
